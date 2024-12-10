@@ -49,7 +49,8 @@ See COPYRIGHT and LICENSE files for more details.
   <p><%= f.text_field :journal_notes, label: :comments %></p>
   <%= styled_button_tag t(:button_save),
                         class: '-primary -with-icon icon-checkmark button--save-agenda',
-                        data: { disable_with: I18n.t(:label_loading) } %>
+                        data: { disable_with: I18n.t(:label_loading),
+                                turbo: false } %>
   <%= link_to t(:button_cancel),
               "#",
               data: {
