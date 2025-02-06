@@ -84,6 +84,7 @@ gem "stringex", "~> 2.8.5"
 
 # CommonMark markdown parser with GFM extension
 gem "commonmarker", "~> 2.0.2"
+gem "rb_sys", "~> 0.9.110"
 
 # HTML pipeline for transformations on text formatter output
 # such as sanitization or additional features
