@@ -23,7 +23,8 @@
                   )) do |button|
               button.with_tooltip(text: number_of_user_reactions_text(data[:users]),
                                   test_selector: "reaction-tooltip-#{reaction}")
-              "#{EmojiReaction.emoji(reaction)} #{data[:count]}"
+              button.with_trailing_visual_counter(count: data[:count])
+              EmojiReaction.emoji(reaction)
             end
           end
         end
