@@ -68,7 +68,7 @@ module Components
                 capybara_options = expected_emoji_options.except(:count)
               end
 
-              expect(page).to have_selector(:link_or_button, text: "#{emoji} #{expected_emoji_count}", **capybara_options)
+              expect(page).to have_selector(:link_or_button, text: /#{emoji}\s+#{expected_emoji_count}\b/, **capybara_options)
             end
           end
         end

@@ -71,7 +71,7 @@ RSpec.describe WorkPackages::ActivitiesTab::Journals::ItemComponent::Reactions, 
   end
 
   def expect_emoji_reaction(reaction:, count:, tooltip_text:, aria_label:)
-    expect(page).to have_test_selector("reaction-#{reaction}", text: "#{EmojiReaction.emoji(reaction)} #{count}",
+    expect(page).to have_test_selector("reaction-#{reaction}", text: /#{EmojiReaction.emoji(reaction)}\s+#{count}\b/,
                                                                aria: { label: aria_label })
     expect(page).to have_test_selector("reaction-tooltip-#{reaction}", text: tooltip_text)
   end
