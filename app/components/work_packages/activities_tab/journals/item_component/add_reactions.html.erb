@@ -31,7 +31,8 @@
                         turbo_method: :put,
                         "work-packages--activities-tab--index-target": "reactionButton",
                       },
-                      aria: { label: I18n.t("reactions.react_with", reaction: reaction.to_s.humanize(capitalize: false)) }
+                      aria: { label: I18n.t("reactions.react_with", reaction: reaction.to_s.humanize(capitalize: false)) },
+                      classes: %w[Button--iconOnly]
                     )) do
                 emoji
               end
