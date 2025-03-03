@@ -119,7 +119,6 @@ en:
   description_costs_settings: "Define the desired format for the costs in all projects."
   description_time_settings: "Define which fields are mandatory to fill when logging time in all projects."
 
-
   group_by_others: "not in any group"
 
   label_between: "between"
@@ -165,6 +164,7 @@ en:
   label_cost: "Cost"
   label_costs: "Costs"
   label_mandatory_fields: "Mandatory fields"
+  label_my_time_tracking: "My time tracking"
 
   placeholder_activity_select_work_package_first: Work package selection is required first
 
