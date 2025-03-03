@@ -50,6 +50,10 @@ module WorkPackages
         @touched_field_map = touched_field_map
       end
 
+      def wrapper_key
+        "wp-datepicker-dialog--content"
+      end
+
       private
 
       def schedule_manually?
