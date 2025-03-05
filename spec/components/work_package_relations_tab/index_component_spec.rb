@@ -60,11 +60,13 @@ RSpec.describe WorkPackageRelationsTab::IndexComponent, type: :component do
       expect(render_component).to have_test_selector("op-relation-group-children")
     end
 
-    it "renders the relations" do
+    it "renders the relations in order" do
       expect(render_component).to have_list "Children"
 
       list = page.find(:list, "Children")
       expect(list).to have_list_item count: 2, text: /child\d/
+      expect(list).to have_list_item position: 1, text: "child1"
+      expect(list).to have_list_item position: 2, text: "child2"
     end
   end
 
@@ -82,11 +84,15 @@ RSpec.describe WorkPackageRelationsTab::IndexComponent, type: :component do
       expect(render_component).to have_test_selector("op-relation-group-follows")
     end
 
-    it "renders the relations" do
+    it "renders the relations in order" do
       expect(render_component).to have_list "Predecessors (before)"
 
       list = page.find(:list, "Predecessors (before)")
       expect(list).to have_list_item count: 4, text: /predecessor\d/
+      expect(list).to have_list_item position: 1, text: "predecessor1"
+      expect(list).to have_list_item position: 2, text: "predecessor2"
+      expect(list).to have_list_item position: 3, text: "predecessor3"
+      expect(list).to have_list_item position: 4, text: "predecessor4"
     end
 
     it "renders the closest relation" do
