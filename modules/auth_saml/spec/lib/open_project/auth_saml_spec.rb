@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "#{File.dirname(__FILE__)}/../../spec_helper"
 require "open_project/auth_saml"
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WorkPackageRelationsTab::RelationComponent < ApplicationComponent
   include ApplicationHelper
   include OpPrimer::ComponentHelpers

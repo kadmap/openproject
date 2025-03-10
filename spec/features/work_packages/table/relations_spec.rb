@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 RSpec.describe "Work Package table relations", :js, with_ee: %i[work_package_query_relation_columns] do

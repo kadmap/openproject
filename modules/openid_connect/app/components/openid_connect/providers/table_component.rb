@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OpenIDConnect
   module Providers
     class TableComponent < ::OpPrimer::BorderBoxTableComponent

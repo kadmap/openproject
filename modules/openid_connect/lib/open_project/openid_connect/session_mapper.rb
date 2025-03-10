@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OpenProject::OpenIDConnect
   class SessionMapper
     def self.handle_logout(logout_token)

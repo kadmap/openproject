@@ -31,18 +31,18 @@
 class Notifications::CreateFromModelService
   MENTION_USER_TAG_ID_PATTERN =
     '<mention[^>]*(?:data-type="user"[^>]*data-id="(\d+)")|(?:data-id="(\d+)"[^>]*data-type="user")[^>]*>'
-      .freeze
+      
   MENTION_USER_HASH_ID_PATTERN =
     '\buser#(\d+)\b'
-      .freeze
+      
   MENTION_USER_LOGIN_PATTERN =
-    '\buser:"(.+?)"'.freeze
+    '\buser:"(.+?)"'
   MENTION_GROUP_TAG_ID_PATTERN =
     '<mention[^>]*(?:data-type="group"[^>]*data-id="(\d+)")|(?:data-id="(\d+)"[^>]*data-type="group")[^>]*>'
-      .freeze
+      
   MENTION_GROUP_HASH_ID_PATTERN =
     '\bgroup#(\d+)\b'
-      .freeze
+      
   COMBINED_MENTION_PATTERN =
     [MENTION_USER_TAG_ID_PATTERN,
      MENTION_USER_HASH_ID_PATTERN,
