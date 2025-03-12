@@ -11,8 +11,11 @@ import { TimelineRenderPass } from './timeline/timeline-render-pass';
 import { SingleRowBuilder } from './rows/single-row-builder';
 import { RelationRenderInfo, RelationsRenderPass } from './relations/relations-render-pass';
 import { WorkPackageTable } from '../wp-fast-table';
+import {
+  ChildRelationsRenderPass
+} from 'core-app/features/work-packages/components/wp-fast-table/builders/relations/child-relations-render-pass';
 
-export type RenderedRowType = 'primary'|'relations';
+export type RenderedRowType = 'primary'|'relations'|'child_relations';
 
 export interface RowRenderInfo {
   // The rendered row
@@ -53,6 +56,9 @@ export abstract class PrimaryRenderPass {
   /** Additional render pass that handles table relation rendering */
   public relations:RelationsRenderPass;
 
+  /** Additional render pass that handles table child relation rendering */
+  public childRelations:ChildRelationsRenderPass;
+
   /** Additional render pass that handles drag'n'drop handle rendering */
   public dragDropHandle:DragDropHandleRenderPass;
 
@@ -87,6 +93,7 @@ export abstract class PrimaryRenderPass {
 
     timeOutput('Relations render pass', () => {
       this.relations.render();
+      this.childRelations.render();
     });
 
     timeOutput('Drag handle render pass', () => {
@@ -115,6 +122,10 @@ export abstract class PrimaryRenderPass {
         break;
       case 'relations':
         replacement = this.relations.refreshRelationRow(row as RelationRenderInfo, workPackage, oldRow);
+        break;
+      case 'child_relations':
+        replacement = this.childRelations.refreshRelationRow(row as RelationRenderInfo, workPackage, oldRow);
+        break;
     }
 
     if (replacement !== null && oldRow.length) {
@@ -153,6 +164,7 @@ export abstract class PrimaryRenderPass {
   protected prepare() {
     this.timeline = new TimelineRenderPass(this.injector, this.workPackageTable, this);
     this.relations = new RelationsRenderPass(this.injector, this.workPackageTable, this);
+    this.childRelations = new ChildRelationsRenderPass(this.injector, this.workPackageTable, this);
     this.dragDropHandle = new DragDropHandleRenderPass(this.injector, this.workPackageTable, this);
     this.highlighting = new HighlightingRenderPass(this.injector, this.workPackageTable, this);
     this.tableBody = document.createDocumentFragment();

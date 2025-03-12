@@ -84,6 +84,7 @@ module Queries::WorkPackages
     select Selects::CustomFieldSelect
     select Selects::RelationToTypeSelect
     select Selects::RelationOfTypeSelect
+    select Selects::RelationChildSelect
     select Selects::ManualSortingSelect
     select Selects::TypeaheadSelect
   end

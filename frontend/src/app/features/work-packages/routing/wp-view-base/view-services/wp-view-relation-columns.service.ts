@@ -44,7 +44,7 @@ import { HalResourceService } from 'core-app/features/hal/services/hal-resource.
 import { WorkPackageViewBaseService } from './wp-view-base.service';
 import { WorkPackageViewColumnsService } from './wp-view-columns.service';
 
-export type RelationColumnType = 'toType'|'ofType';
+export type RelationColumnType = 'toType'|'ofType'|'children';
 
 @Injectable()
 export class WorkPackageViewRelationColumnsService extends WorkPackageViewBaseService<WorkPackageViewRelationColumns> {

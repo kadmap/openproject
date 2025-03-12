@@ -4,10 +4,15 @@ export const queryColumnTypes = {
   PROPERTY: 'QueryColumn::Property',
   RELATION_OF_TYPE: 'QueryColumn::RelationOfType',
   RELATION_TO_TYPE: 'QueryColumn::RelationToType',
+  RELATION_CHILD: 'QueryColumn::RelationChild',
 };
 
 export function isRelationColumn(column:QueryColumn) {
-  const relationTypes = [queryColumnTypes.RELATION_TO_TYPE, queryColumnTypes.RELATION_OF_TYPE];
+  const relationTypes = [
+    queryColumnTypes.RELATION_TO_TYPE,
+    queryColumnTypes.RELATION_OF_TYPE,
+    queryColumnTypes.RELATION_CHILD,
+  ];
   return relationTypes.indexOf(column._type) >= 0;
 }
 

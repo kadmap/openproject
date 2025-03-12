@@ -34,7 +34,7 @@ export class DragDropHandleRenderPass {
 
         const handle = this.dragDropHandleBuilder.build(row.workPackage, positions[row.workPackage.id!]);
 
-        if (handle) {
+        if (handle && row.element) {
           row.element.replaceChild(handle, row.element.firstElementChild!);
         }
       });

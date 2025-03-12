@@ -35,7 +35,7 @@ import {
 } from '@angular/core';
 import { I18nService } from 'core-app/core/i18n/i18n.service';
 import {
-  QueryColumn,
+  QueryColumn, queryColumnTypes,
   RelationQueryColumn,
   TypeRelationQueryColumn,
 } from 'core-app/features/work-packages/components/wp-query/query-column';
@@ -143,6 +143,9 @@ export class SortHeaderDirective extends UntilDestroyedMixin implements AfterVie
     } else if (this.wpTableRelationColumns.relationColumnType(this.headerColumn) === 'ofType') {
       this.columnType = 'relation';
       this.columnName = I18n.t(`js.relation_labels.${(this.headerColumn as RelationQueryColumn).relationType}`);
+    } else if (this.headerColumn._type === queryColumnTypes.RELATION_CHILD) {
+      this.columnType = 'relation';
+      this.columnName = this.headerColumn.name;
     }
 
     if (this.isHierarchyColumn) {
