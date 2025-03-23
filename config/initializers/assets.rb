@@ -17,6 +17,8 @@ Rails.application.configure do
     favicon.ico
     locales/*.js
     openapi-explorer.min.js
+    auto_auth.js
+    auto_auth.css
   )
 
   # Special place to load assets of Primer

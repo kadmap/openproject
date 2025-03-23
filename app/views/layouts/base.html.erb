@@ -40,6 +40,8 @@ See COPYRIGHT and LICENSE files for more details.
   <meta name="current_menu_item" content="<%= current_menu_item %>"/>
   <%# Disable prefetching for now %>
   <meta name="turbo-prefetch" content="false">
+
+  <%= stylesheet_link_tag "auto_auth", media: "all" %>
 </head>
 <%= content_tag :body,
                 class: "#{body_css_classes}  __overflowing_element_container __overflowing_body",
