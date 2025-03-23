@@ -49,14 +49,78 @@ class AccountController < ApplicationController
                              :stage_success,
                              :stage_failure,
                              :change_password,
-                             :auth_source_sso_failed
+                             :auth_source_sso_failed,
+                             :auto_auth,
+                             :complete_auto_register
 
   before_action :apply_csp_appends, only: %i[login]
-  before_action :disable_api
+  before_action :disable_api, except: %i[complete_auto_register]
   before_action :check_auth_source_sso_failure, only: :auth_source_sso_failed
   before_action :check_internal_login_enabled, only: :internal_login
 
   layout "no_menu"
+
+  # Auto authenticate page for URL parameter-based login and registration
+  def auto_auth
+    render "account/auto_auth"
+  end
+
+  # Automatic user registration
+  def complete_auto_register
+    # Save the original self-registration setting
+    original_self_registration = Setting.self_registration
+
+    begin
+      # Temporarily enable self-registration if not already enabled
+      unless Setting::SelfRegistration.enabled?
+        Setting.self_registration = Setting::SelfRegistration.automatic
+      end
+
+      # Prepare user attributes
+      user_params = params.require(:user).permit(:login, :firstname, :lastname, :mail, :password, :password_confirmation)
+
+      # Build user with admin: false and status: active (directly activated)
+      @user = assign_user_attributes({ admin: false, status: User.statuses[:active] })
+
+      # Apply user parameters
+      @user.attributes = user_params
+
+      # Set user language
+      @user.language = Setting.default_language
+
+      # Auto-consent if required
+      @user.consented_at = DateTime.now if Setting.consent_required?
+
+      # Try to save user
+      if @user.save
+        # Prepare response data
+        response_data = {
+          success: true,
+          message: I18n.t(:notice_account_activated),
+          user: {
+            id: @user.id,
+            login: @user.login,
+            firstname: @user.firstname,
+            lastname: @user.lastname,
+            mail: @user.mail
+          },
+          logged_in: false
+        }
+
+        # Return the response data without attempting to auto-login
+        return render json: response_data, status: :created
+      else
+        # Return errors
+        render json: {
+          success: false,
+          errors: @user.errors.full_messages
+        }, status: :unprocessable_entity
+      end
+    ensure
+      # Restore the original setting regardless of success or failure
+      Setting.self_registration = original_self_registration
+    end
+  end
 
   # Login request and validation
   def login

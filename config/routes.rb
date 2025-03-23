@@ -102,6 +102,9 @@ Rails.application.routes.draw do
     match "/account/register", action: "register", via: %i[get post patch]
     get "/account/activate", action: "activate"
 
+    get "/auto_auth", action: "auto_auth", as: "auto_auth"
+    post "/complete_auto_register", action: "complete_auto_register", as: "complete_auto_register"
+
     match "/login", action: "login", as: "signin", via: %i[get post]
     get "/login/internal", action: "internal_login", as: "internal_signin"
     get "/logout", action: "logout", as: "signout"
