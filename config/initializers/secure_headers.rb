@@ -57,8 +57,11 @@ Rails.application.config.after_initialize do
     # Default src
     default_src = %w('self') + OpenProject::Configuration.remote_storage_hosts
 
-    # Allow requests to CLI in dev mode
-    connect_src = default_src + [OpenProject::Configuration.enterprise_trial_creation_host]
+    # Allow requests to CLI in dev mode and Kadmap API
+    connect_src = default_src + [
+      OpenProject::Configuration.enterprise_trial_creation_host,
+      ENV.fetch("KADMAP_API_URL", "http://192.168.30.77:19090")
+    ]
 
     # Rules for media (e.g. video sources)
     media_src = default_src

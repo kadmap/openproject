@@ -34,39 +34,45 @@ The Auto Authentication feature enables automatic user authentication or registr
 
 ### How It Works
 
-1. The user is directed to the `/auto_auth` URL with appropriate user information in query parameters
-2. The auto_auth.js script executes and first attempts to authenticate with the provided login and password
-3. If authentication is successful, the user is logged in and redirected to the root path or specified redirect path
-4. If authentication fails (user doesn't exist or credentials are invalid), the script proceeds with registration:
-   - Registration data is gathered from URL parameters or defaults
+1. The user is directed to the `/auto_auth` URL with Kadmap API information in query parameters
+2. The auto_auth.js script fetches user data from the Kadmap API using the provided user_id
+3. The script first attempts to authenticate with the credentials from the API response
+4. If authentication is successful, the user is logged in and redirected to the root path or specified redirect path
+5. If authentication fails (user doesn't exist or credentials are invalid), the script proceeds with registration:
+   - Registration data is gathered from the Kadmap API response
    - A POST request is sent to the `/complete_auto_register` endpoint
    - The server creates the user and returns a success response with user details
    - The client-side script then attempts to log in with the credentials used for registration
    - After successful login, the user is redirected to the root path or a specified redirect path
    - If registration fails, error information is provided
 
-### Login Parameters
+### URL Parameters
 
-The following parameters can be provided in the URL for authentication:
-
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| login | User's login name | `login=admin` |
-| password | User's password | `password=secret123` |
-
-If authentication fails, registration will be attempted.
-
-### Registration Parameters
-
-The following parameters can be provided in the URL for registration:
+The following parameters can be provided in the URL for Kadmap API integration:
 
 | Parameter | Description | Example |
 |-----------|-------------|---------|
-| firstname | User's first name | `firstname=John` |
-| lastname | User's last name | `lastname=Smith` |
-| email | User's email address | `email=john.smith@example.com` |
-| login | User's login name (defaults to email username) | `login=jsmith` |
-| password | User's password (generated randomly if not provided) | `password=SecurePass123` |
+| kadmap_api_url | URL of the Kadmap API | `kadmap_api_url=http://192.168.30.77:19090` |
+| user_id | User ID in the Kadmap system | `user_id=891e9432-6655-413e-8840-27ad23c9b223` |
+
+### Kadmap API Response Format
+
+The Kadmap API should return a JSON response in the following format:
+
+```json
+{
+  "data": {
+    "fullName": "John Smith",
+    "userKID": "john.smith@example.com",
+    "userId": "user-password-or-id"
+  }
+}
+```
+
+The script will:
+- Split `fullName` into first and last name
+- Use `userKID` as both the email and login
+- Use `userId` as the password
 
 ### Response Format
 
@@ -94,7 +100,7 @@ Note that the `logged_in` value is always `false` because the server does not at
 ### Auto Authentication URL Example
 
 ```
-https://your-openproject-instance.com/auto_auth?firstname=John&lastname=Smith&email=john.smith@example.com&login=jsmith&password=SecurePass123
+https://your-openproject-instance.com/auto_auth?kadmap_api_url=http://192.168.30.77:19090&user_id=891e9432-6655-413e-8840-27ad23c9b223
 ```
 
 ### JavaScript Integration
@@ -102,7 +108,7 @@ https://your-openproject-instance.com/auto_auth?firstname=John&lastname=Smith&em
 For client-side integration, include the auto_auth.js file in your HTML:
 
 ```html
-<script src="/assets/auto_auth.js"></script>
+<script src="/assets/auto_auth.js" data-redirect-path="/your-custom-path"></script>
 ```
 
 ### Server-Side Integration
@@ -120,8 +126,8 @@ X-CSRF-Token: [your-csrf-token]
     "firstname": "John",
     "lastname": "Smith",
     "mail": "john.smith@example.com",
-    "password": "SecurePass123",
-    "password_confirmation": "SecurePass123"
+    "password": "user-password-or-id",
+    "password_confirmation": "user-password-or-id"
   }
 }
 ```
@@ -133,6 +139,54 @@ X-CSRF-Token: [your-csrf-token]
 - Consider implementing additional verification mechanisms for registrations
 - Use HTTPS to protect sensitive data during the registration process
 - Be aware that allowing auto-registration could potentially enable abuse if not properly secured
+- The Kadmap API URL must be properly configured in the Content Security Policy
+- Ensure proper authentication and authorization for the Kadmap API endpoint
+
+## Kadmap API Integration
+
+When integrating with the Kadmap API, the following considerations apply:
+
+### Content Security Policy (CSP)
+
+The Kadmap API URL must be added to the Content Security Policy's `connect-src` directive. This is configured through an environment variable:
+
+```bash
+KADMAP_API_URL=http://your-api-url:port
+```
+
+The default value is `http://192.168.30.77:19090` if not specified.
+
+### Docker Configuration
+
+When running OpenProject in Docker, you can configure the Kadmap API URL in several ways:
+
+1. Using environment variables when running docker-compose:
+```bash
+KADMAP_API_URL=http://your-api-url:port docker-compose up
+```
+
+2. Using a `.env` file in the same directory as your docker-compose files:
+```
+KADMAP_API_URL=http://your-api-url:port
+```
+
+3. Adding to your `docker-compose.override.yml`:
+```yaml
+services:
+  backend:
+    environment:
+      KADMAP_API_URL: "${KADMAP_API_URL:-http://192.168.30.77:19090}"
+```
+
+### Security Recommendations
+
+- Use HTTPS for the Kadmap API endpoint in production environments
+- Regularly update the API URL if it changes
+- Consider implementing API authentication if not already present
+- Monitor CSP violations in your browser's console for potential security issues
+- Ensure the Kadmap API implements proper security measures
+- Consider implementing rate limiting for the API endpoint
+- Use secure communication channels between OpenProject and the Kadmap API
 
 ## API Reference
 
@@ -153,7 +207,8 @@ Auto-registration is subject to the global self-registration settings in OpenPro
 
 1. Enable self-registration in Administration → Authentication → Self-registration
 2. Ensure the user has proper permissions for the registration process
+3. Configure the Kadmap API URL in your environment or Docker configuration
 
 ---
 
-**Note**: Always follow best security practices when implementing automatic registration and authentication systems. 
+**Note**: Always follow best security practices when implementing automatic registration and authentication systems.
