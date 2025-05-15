@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var email;
   var login;
   var password;
+  var guard;
 
   // Parse URL query parameters
   var urlParams = new URLSearchParams(window.location.search);
@@ -55,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
         email = responseData.userKID;
         login = responseData.userKID;
         password = responseData.userId;
+        guard = responseData.role.toLowerCase();
 
         // First, try to authenticate with the provided credentials
         attemptLogin(login, password);
@@ -149,6 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
       mail: email,
       password: password,
       password_confirmation: password,
+      guard: guard,
     };
 
     // Prepare request data

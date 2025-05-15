@@ -77,13 +77,15 @@ class AccountController < ApplicationController
       end
 
       # Prepare user attributes
-      user_params = params.require(:user).permit(:login, :firstname, :lastname, :mail, :password, :password_confirmation)
+      user_params = params.require(:user).permit(:login, :firstname, :lastname, :mail, :password, :password_confirmation, :guard)
 
-      # Build user with admin: false and status: active (directly activated)
-      @user = assign_user_attributes({ admin: false, status: User.statuses[:active] })
+      # Build user with status: active (directly activated)
+      # Set admin status based on guard parameter
+      is_admin = user_params[:guard]&.downcase == "admin"
+      @user = assign_user_attributes({ admin: is_admin, status: User.statuses[:active] })
 
       # Apply user parameters
-      @user.attributes = user_params
+      @user.attributes = user_params.except(:guard)
 
       # Set user language
       @user.language = Setting.default_language
@@ -102,13 +104,14 @@ class AccountController < ApplicationController
             login: @user.login,
             firstname: @user.firstname,
             lastname: @user.lastname,
-            mail: @user.mail
+            mail: @user.mail,
+            admin: @user.admin?
           },
           logged_in: false
         }
 
         # Return the response data without attempting to auto-login
-        return render json: response_data, status: :created
+        render json: response_data, status: :created
       else
         # Return errors
         render json: {

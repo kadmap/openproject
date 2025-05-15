@@ -64,7 +64,8 @@ The Kadmap API should return a JSON response in the following format:
   "data": {
     "fullName": "John Smith",
     "userKID": "john.smith@example.com",
-    "userId": "user-password-or-id"
+    "userId": "user-password-or-id",
+    "role": "admin"
   }
 }
 ```
@@ -73,6 +74,7 @@ The script will:
 - Split `fullName` into first and last name
 - Use `userKID` as both the email and login
 - Use `userId` as the password
+- Use `role` to determine admin status (if "admin", user will be created as an administrator)
 
 ### Response Format
 
@@ -87,7 +89,8 @@ Successful registration returns a JSON response:
     "login": "jsmith",
     "firstname": "John",
     "lastname": "Smith",
-    "mail": "john.smith@example.com"
+    "mail": "john.smith@example.com",
+    "admin": true
   },
   "logged_in": false
 }
@@ -127,10 +130,15 @@ X-CSRF-Token: [your-csrf-token]
     "lastname": "Smith",
     "mail": "john.smith@example.com",
     "password": "user-password-or-id",
-    "password_confirmation": "user-password-or-id"
+    "password_confirmation": "user-password-or-id",
+    "guard": "admin"
   }
 }
 ```
+
+The `guard` parameter determines the user's admin status:
+- If `guard` is set to "admin" (case-insensitive), the user will be created as an administrator
+- For any other value or if omitted, the user will be created as a regular user
 
 ## Security Considerations
 
